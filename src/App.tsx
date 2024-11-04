@@ -5,15 +5,18 @@ import ListScreen from "./screens/ListScreen";
 import CalendarScreen from "./screens/CalendarScreen";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import AddScreen from "./screens/AddScreen";
+import { AuthProvider } from "./utils/Auth";
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
 
 export default function App() {
   return (
-    <NavigationContainer>
-      <TabNavigator />
-    </NavigationContainer>
+    <AuthProvider>
+      <NavigationContainer>
+        <TabNavigator />
+      </NavigationContainer>
+    </AuthProvider>
   );
 }
 

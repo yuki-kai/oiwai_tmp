@@ -1,12 +1,14 @@
-import React from "react";
+import React, { useContext } from "react";
 import { View, Text, StyleSheet } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { RootStackParamList } from "../types/route";
+import { AuthContext } from "../utils/Auth";
 
 export default function ListScreen() {
-  const navigation =
-    useNavigation<StackNavigationProp<RootStackParamList, "Add">>();
+  const { currentUser } = useContext(AuthContext);
+  console.log(currentUser?.uid);
+  const navigation = useNavigation<StackNavigationProp<RootStackParamList, "Add">>();
 
   return (
     <View style={styles.container}>

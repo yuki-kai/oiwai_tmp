@@ -1,13 +1,17 @@
-import { Text, StyleSheet, TouchableOpacity } from "react-native";
+import {
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  GestureResponderEvent,
+} from "react-native";
 
-const handlePress = (): void => {};
+type Props = {
+  handleButtonPress: (event: GestureResponderEvent) => void
+};
 
-export default function AddButton() {
+export default function AddButton({ handleButtonPress }: Props) {
   return (
-    <TouchableOpacity
-      style={styles.addButton}
-      onPress={() => handlePress()}
-    >
+    <TouchableOpacity style={ styles.addButton } onPress={ handleButtonPress }>
       <Text style={styles.addButtonLabel}>記念日を追加</Text>
     </TouchableOpacity>
   );

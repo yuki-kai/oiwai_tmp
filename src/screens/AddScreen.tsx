@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import {
   View,
   Text,
@@ -12,15 +12,24 @@ import DateTimePicker, {
   DateTimePickerEvent,
 } from "@react-native-community/datetimepicker";
 import AddButton from "../components/AddButton";
+import useAddaddCelebration from "../hooks/useAddCelebration";
+import { Celebration } from "../models/Celebration";
+import { AuthContext } from "../utils/Auth";
 
 export default function AddScreen() {
-  const today = new Date();
+  const { currentUser } = useContext(AuthContext);
+  const { addCelebration } = useAddaddCelebration();
   const [dayName, setDayName] = useState("");
-  const [date, setDate] = useState(today);
+  const [date, setDate] = useState(new Date());
 
   // 年月日変更時に呼ばれる
   const onDateChange = (event: DateTimePickerEvent, selectedDate: Date | undefined) => {
     setDate(selectedDate || date);
+  };
+
+  const handleAddCelebration = () => {
+    const celebration = Celebration.create(currentUser!.uid!, { dayName, date });
+    addCelebration(celebration);
   };
 
   return (
@@ -44,7 +53,8 @@ export default function AddScreen() {
           />
         </View>
       </TouchableWithoutFeedback>
-      <AddButton />
+
+      <AddButton handleButtonPress={handleAddCelebration} />
     </KeyboardAvoidingView>
   );
 }

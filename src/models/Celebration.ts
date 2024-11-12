@@ -4,9 +4,10 @@ type CelebrationProps = {
 };
 
 export class Celebration {
-	public path: string;
-	private readonly dayName: string;
-	private readonly date: Date;
+	public readonly path: string;
+	public readonly dayName: string;
+	public readonly date: Date;
+	public readonly id?: string;
 
 	private constructor(uid: string, props: CelebrationProps) {
 		this.path = `users/${uid}/celebrations`;

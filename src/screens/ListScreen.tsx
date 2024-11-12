@@ -5,9 +5,8 @@ import { StackNavigationProp } from "@react-navigation/stack";
 import { RootStackParamList } from "../types/route";
 import { AuthContext } from "../utils/Auth";
 import { Celebration } from "../models/Celebration";
-import { collection, getDocs } from "firebase/firestore";
-import { db } from "../../firebaseConfig";
 import CelebrationCard from "../components/CelebrationCard";
+import { CelebrationRepository } from "../repositories/celebration.repository";
 
 export default function ListScreen() {
   const { currentUser } = useContext(AuthContext);
@@ -17,21 +16,14 @@ export default function ListScreen() {
 
   useEffect(() => {
     (async() => {
-      const collectionRef = collection(db, `users/${currentUser!.uid!}/celebrations`);
-      const snapshot = await getDocs(collectionRef);
-      const celebrationList: Celebration[] = snapshot.docs.map((doc) => {
-        // TODO: repository で取得して Timestamp と Date の変換も取得時に行う
-        return Celebration.create(currentUser!.uid, {
-          dayName: doc.data().dayName,
-          date: doc.data().date.toDate(),
-        });
-      });
+      const celebrationRepository = new CelebrationRepository(currentUser!.uid!);
+      const celebrationList = await celebrationRepository.getCelebrationList();
       setCelebrations(celebrationList);
     })();
   }, []);
 
   const _renderItem = (listRenderItemInfo: ListRenderItemInfo<Celebration>) => {
-    return <CelebrationCard {...listRenderItemInfo.item.toDto()} />;
+    return <CelebrationCard {...listRenderItemInfo.item} />;
   };
 
   return (

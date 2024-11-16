@@ -1,18 +1,19 @@
 import { Celebration } from "../models/Celebration";
-import { collection, getDocs } from "firebase/firestore";
+import { addDoc, collection, CollectionReference, getDocs } from "firebase/firestore";
 import { db } from "../../firebaseConfig";
 
 export class CelebrationRepository {
 	private path: string;
+	private collectionRef: CollectionReference;
 
 	constructor(userId: string) {
 		console.log("CelebrationRepository: " + userId);
 		this.path = `users/${userId}/celebrations`;
+		this.collectionRef = collection(db, this.path);
 	}
 
 	public async getCelebrationList(): Promise<Celebration[]> {
-		const collectionRef = collection(db, this.path);
-		const snapshot = await getDocs(collectionRef);
+		const snapshot = await getDocs(this.collectionRef);
 		return snapshot.docs.map((doc) => {
 			const celebration = doc.data();
 			// TODO: withConverter的な処理を共通化する
@@ -23,5 +24,10 @@ export class CelebrationRepository {
 				date: date,
 			} as Celebration;
 		});
+	}
+
+	public async createCelebration(celebration: Celebration): Promise<void> {
+		await addDoc(this.collectionRef, { ...celebration.toDto() });
+		// TODO: エラーハンドリング
 	}
 }

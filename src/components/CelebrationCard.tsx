@@ -3,16 +3,10 @@ import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { RootStackParamList } from "../types/route";
+import { CelebrationDto } from "../types/celebration";
 
-type Props = {
-	id?: string
-  dayName: string,
-	date: Date,
-};
-
-export default function CelebrationCard(props: Props) {
+export default function CelebrationCard({ celebration }: { celebration: CelebrationDto }) {
   const navigation = useNavigation<StackNavigationProp<RootStackParamList, "Detail">>();
-	const { id, dayName, date } = props;
 
   return (
     <TouchableOpacity
@@ -20,8 +14,8 @@ export default function CelebrationCard(props: Props) {
 			onPress={() => console.log("詳細画面へ遷移")}
 		>
 			<View>
-      	<Text style={styles.celebrationTitle}>{ dayName }</Text>
-      	<Text style={styles.celebrationDate}>{ date.toString() }</Text>
+      	<Text style={styles.celebrationTitle}>{ celebration.dayName }</Text>
+      	<Text style={styles.celebrationDate}>{ celebration.date.toString() }</Text>
 			</View>
     </TouchableOpacity>
   );

@@ -1,25 +1,32 @@
+import { CelebrationDto } from "../types/celebration";
+
 type CelebrationProps = {
 	dayName: string;
 	date: Date;
+	docId?: string;
 };
 
 export class Celebration {
-	public readonly path: string;
 	public readonly dayName: string;
 	public readonly date: Date;
-	public readonly id?: string;
+	public readonly docId?: string;
 
-	private constructor(uid: string, props: CelebrationProps) {
-		this.path = `users/${uid}/celebrations`;
+	private constructor(props: CelebrationProps) {
 		this.dayName = props.dayName;
 		this.date = props.date;
+		this.docId = props.docId;
 	}
 
-	public static create(uid: string, props: CelebrationProps): Celebration {
-		return new Celebration(uid, props);
+	public static create(props: CelebrationProps): CelebrationDto {
+		const celebration = new Celebration(props);
+		return celebration.toDto();
 	};
 
-	public toDto() {
-		return { dayName: this.dayName, date: this.date };
+	public toDto(): CelebrationDto {
+		return {
+			id: this.docId ?? "#",
+			dayName: this.dayName,
+			date: this.date,
+		};
 	};
 }

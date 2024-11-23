@@ -1,13 +1,13 @@
-import { Celebration } from "../models/Celebration";
 import { useNavigation } from "@react-navigation/native";
 import { useContext } from "react";
 import { AuthContext } from "../utils/Auth";
 import { CelebrationRepository } from "../repositories/celebration.repository";
+import { CelebrationDto } from "../types/celebration";
 
 const useAddCelebration = () => {
   const { currentUser } = useContext(AuthContext);
   const navigation = useNavigation();
-  const addCelebration = (celebration: Celebration) => {
+  const addCelebration = (celebration: CelebrationDto) => {
     console.log("useAddCelebration: " + celebration);
     const celebrationRepository = new CelebrationRepository(currentUser!.uid!);
     celebrationRepository.createCelebration(celebration)

@@ -1,4 +1,4 @@
-import { Celebration } from "../models/Celebration";
+import { CelebrationDto } from "../types/celebration";
 import { addDoc, collection, CollectionReference, getDocs } from "firebase/firestore";
 import { db } from "../../firebaseConfig";
 
@@ -12,7 +12,7 @@ export class CelebrationRepository {
 		this.collectionRef = collection(db, this.path);
 	}
 
-	public async getCelebrationList(): Promise<Celebration[]> {
+	public async getCelebrationList(): Promise<CelebrationDto[]> {
 		const snapshot = await getDocs(this.collectionRef);
 		return snapshot.docs.map((doc) => {
 			const celebration = doc.data();
@@ -22,12 +22,12 @@ export class CelebrationRepository {
 				id: doc.id,
 				dayName: celebration.dayName,
 				date: date,
-			} as Celebration;
+			};
 		});
 	}
 
-	public async createCelebration(celebration: Celebration): Promise<void> {
-		await addDoc(this.collectionRef, { ...celebration.toDto() });
+	public async createCelebration(celebration: CelebrationDto): Promise<void> {
+		await addDoc(this.collectionRef, { ...celebration });
 		// TODO: エラーハンドリング
 	}
 }

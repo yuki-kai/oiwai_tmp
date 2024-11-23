@@ -28,7 +28,7 @@ export default function AddScreen() {
   };
 
   const handleAddCelebration = () => {
-    const celebration = Celebration.create(currentUser!.uid!, { dayName, date });
+    const celebration = Celebration.create({ dayName, date });
     addCelebration(celebration);
   };
 

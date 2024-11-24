@@ -24,7 +24,7 @@ export class Celebration {
 
 	public toDto(): CelebrationDto {
 		return {
-			id: this.docId ?? "#",
+			docId: this.docId,
 			dayName: this.dayName,
 			date: this.date,
 		};

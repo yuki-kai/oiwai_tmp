@@ -1,5 +1,7 @@
 export type CelebrationDto = {
-	id: string;
+	docId?: string;
 	dayName: string;
 	date: Date;
+	createdAt?: Date;
+	updatedAt?: Date;
 };

@@ -11,7 +11,8 @@ export default function CelebrationCard({ celebration }: { celebration: Celebrat
   return (
     <TouchableOpacity
 			style={styles.celebrationCard}
-			onPress={() => console.log("詳細画面へ遷移")}
+			// TODO: Date型は Non-serializable values were found の WARN が出るのでunixtimeで扱う？
+			onPress={() => navigation.navigate("Detail", { celebration })}
 		>
 			<View>
       	<Text style={styles.celebrationTitle}>{ celebration.dayName }</Text>

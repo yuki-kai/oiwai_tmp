@@ -40,11 +40,10 @@ export class CelebrationRepository {
 		const snapshot = await getDocs(query(this.collectionRef, orderBy("date")));
 		return snapshot.docs.map((doc) => {
 			const celebration = doc.data();
-			const date = celebration.date.toDate();
 			return {
 				docId: doc.id,
 				dayName: celebration.dayName,
-				date: date,
+				date: celebration.date,
 			};
 		});
 	}

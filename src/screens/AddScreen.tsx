@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useState } from "react";
 import {
   View,
   Text,
@@ -14,10 +14,9 @@ import DateTimePicker, {
 import AddButton from "../components/AddButton";
 import useAddaddCelebration from "../hooks/useAddCelebration";
 import { Celebration } from "../models/Celebration";
-import { AuthContext } from "../utils/Auth";
+import { convertDateString } from "../utils/dateFormat";
 
 export default function AddScreen() {
-  const { currentUser } = useContext(AuthContext);
   const { addCelebration } = useAddaddCelebration();
   const [dayName, setDayName] = useState("");
   const [date, setDate] = useState(new Date());
@@ -28,7 +27,8 @@ export default function AddScreen() {
   };
 
   const handleAddCelebration = () => {
-    const celebration = Celebration.create({ dayName, date });
+    const dateString = convertDateString(date);
+    const celebration = Celebration.create({ dayName, date: dateString });
     addCelebration(celebration);
   };
 

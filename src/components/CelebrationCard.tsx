@@ -16,7 +16,7 @@ export default function CelebrationCard({ celebration }: { celebration: Celebrat
 		>
 			<View>
       	<Text style={styles.celebrationTitle}>{ celebration.dayName }</Text>
-      	<Text style={styles.celebrationDate}>{ celebration.date.toString() }</Text>
+      	<Text style={styles.celebrationDate}>{ celebration.date }</Text>
 			</View>
     </TouchableOpacity>
   );

@@ -2,13 +2,13 @@ import { CelebrationDto } from "../types/celebration";
 
 type CelebrationProps = {
 	dayName: string;
-	date: Date;
+	date: string;
 	docId?: string;
 };
 
 export class Celebration {
 	public readonly dayName: string;
-	public readonly date: Date;
+	public readonly date: string; // yyyy/mm/dd
 	public readonly docId?: string;
 
 	private constructor(props: CelebrationProps) {

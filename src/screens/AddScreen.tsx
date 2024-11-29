@@ -1,20 +1,18 @@
 import React, { useState } from "react";
 import {
   View,
-  Text,
   StyleSheet,
-  TextInput,
   TouchableWithoutFeedback,
   Keyboard,
   KeyboardAvoidingView,
 } from "react-native";
-import DateTimePicker, {
-  DateTimePickerEvent,
-} from "@react-native-community/datetimepicker";
+import { DateTimePickerEvent } from "@react-native-community/datetimepicker";
 import AddButton from "../components/AddButton";
 import useAddaddCelebration from "../hooks/useAddCelebration";
 import { Celebration } from "../models/Celebration";
+import TextForm from "../components/TextForm";
 import { convertDateString } from "../utils/dateFormat";
+import DateForm from "../components/DateForm";
 
 export default function AddScreen() {
   const { addCelebration } = useAddaddCelebration();
@@ -36,20 +34,16 @@ export default function AddScreen() {
     <KeyboardAvoidingView behavior="padding" style={styles.container}>
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <View>
-          <Text>お祝いする日</Text>
-          <TextInput
-            style={styles.input}
-            onChangeText={setDayName}
+          <TextForm
+            label="お祝いする日"
             value={dayName}
+            onChangeText={(value: string) => setDayName(value)}
             placeholder="お祝いしたい日を入力してください"
           />
-
-          <Text>年月日</Text>
-          <DateTimePicker
+          <DateForm
+            label="年月日"
             value={date}
-            display="spinner"
-            locale="ja-JP"
-            onChange={onDateChange}
+            onChangeDate={onDateChange}
           />
         </View>
       </TouchableWithoutFeedback>
@@ -63,16 +57,5 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#fff",
-  },
-  input: {
-    width: "90%",
-    height: 40,
-    margin: 12,
-    borderWidth: 1,
-    padding: 10,
-  },
-  row: {
-    flexDirection: "row",
-    alignItems: "center",
   },
 });

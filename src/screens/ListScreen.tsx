@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
-import { View, Text, StyleSheet, FlatList } from "react-native";
+import { View, StyleSheet, FlatList } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { RootStackParamList } from "../types/route";
@@ -7,6 +7,7 @@ import { AuthContext } from "../utils/Auth";
 import CelebrationCard from "../components/CelebrationCard";
 import { CelebrationRepository } from "../repositories/celebration.repository";
 import { CelebrationDto } from "../types/celebration";
+import AddButton from "../components/AddButton";
 
 export default function ListScreen() {
   const { currentUser } = useContext(AuthContext);
@@ -22,6 +23,10 @@ export default function ListScreen() {
     })();
   }, []);
 
+  const handleAddCelebration = (): void => {
+    navigation.navigate("Add");
+  };
+
   return (
     <View style={styles.container}>
       <FlatList
@@ -30,7 +35,7 @@ export default function ListScreen() {
           <CelebrationCard celebration={ item } />
         )}
       />
-      <Text onPress={() => navigation.navigate("Add")}>記念日を追加</Text>
+      <AddButton handleButtonPress={handleAddCelebration} />
     </View>
   );
 }

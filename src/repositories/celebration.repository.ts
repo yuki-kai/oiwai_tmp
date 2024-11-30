@@ -3,6 +3,7 @@ import {
   addDoc,
   collection,
   CollectionReference,
+  doc,
   DocumentData,
   FirestoreDataConverter,
   getDocs,
@@ -11,6 +12,7 @@ import {
   QueryDocumentSnapshot,
   serverTimestamp,
   SnapshotOptions,
+  updateDoc,
 } from "firebase/firestore";
 import { db } from "../../firebaseConfig";
 
@@ -30,7 +32,7 @@ const celebrationConverter: FirestoreDataConverter<CelebrationDto> = {
       dayName: celebration.dayName,
       date: celebration.date,
       createdAt: celebration.createdAt ? celebration.createdAt : serverTimestamp(),
-      updatedAt: serverTimestamp(),
+      updatedAt: serverTimestamp(), // TODO: 更新されないがシミュレータだから？
     };
   },
 };
@@ -43,7 +45,7 @@ export class CelebrationRepository {
     console.log("CelebrationRepository: " + userId);
     this.path = `users/${userId}/celebrations`;
     this.collectionRef = collection(db, this.path).withConverter(
-      celebrationConverter
+      celebrationConverter,
     );
   }
 
@@ -61,6 +63,15 @@ export class CelebrationRepository {
 
   public async createCelebration(celebration: CelebrationDto): Promise<void> {
     await addDoc(this.collectionRef, {
+      dayName: celebration.dayName,
+      date: celebration.date,
+    });
+    // TODO: エラーハンドリング
+  }
+
+  public async editCelebration(celebration: CelebrationDto): Promise<void> {
+    const docRef = doc(db, this.path, celebration.docId!);
+    await updateDoc(docRef, {
       dayName: celebration.dayName,
       date: celebration.date,
     });

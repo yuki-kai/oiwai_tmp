@@ -2,19 +2,20 @@ import { Text, StyleSheet, View, TextInput } from "react-native";
 
 type Props = {
   label: string;
-  value: string;
+  value?: string;
 	onChangeText: (value: string) => void;
   placeholder?: string;
 };
 
 export default function TextForm(props: Props) {
-	const { label, placeholder, onChangeText } = props;
+	const { label, value, placeholder, onChangeText } = props;
 
 	return (
 		<View style={styles.container}>
 			<Text style={styles.label}>{ label }</Text>
 			<TextInput
 				style={styles.input}
+				value={ value }
 				placeholder={ placeholder ?? "入力してください" }
 				onChangeText={(value: string) => onChangeText(value)}
 			/>

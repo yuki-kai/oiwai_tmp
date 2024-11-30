@@ -1,12 +1,25 @@
-import React from "react";
-import { RouteProp, useRoute } from "@react-navigation/native";
-import { StyleSheet, View } from "react-native";
+import React, { useLayoutEffect } from "react";
+import { RouteProp, useNavigation, useRoute } from "@react-navigation/native";
+import { Button, StyleSheet, View } from "react-native";
 import { RootStackParamList } from "../types/route";
 import TextConfirm from "../components/TextConfirm";
+import { StackNavigationProp } from "@react-navigation/stack";
 
 export default function DetailScreen() {
   const route = useRoute<RouteProp<RootStackParamList, "Detail">>();
   const { dayName, date } = route.params.celebration;
+  const navigation = useNavigation<StackNavigationProp<RootStackParamList, "Edit">>();
+
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      headerRight: () => (
+        <Button
+          title="編集"
+          onPress={() => navigation.navigate("Edit", { celebration: route.params.celebration })}
+        />
+      ),
+    });
+  }, []);
 
   return (
     <View style={styles.container}>

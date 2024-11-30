@@ -6,6 +6,7 @@ import CalendarScreen from "./screens/CalendarScreen";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import AddScreen from "./screens/AddScreen";
 import DetailScreen from "./screens/DetailScreen";
+import EditScreen from "./screens/EditScreen";
 import { AuthProvider } from "./utils/Auth";
 
 const Tab = createBottomTabNavigator();
@@ -44,6 +45,7 @@ function ListStackNavigator() {
       <Stack.Screen name="List" component={ListScreen} />
       <Stack.Screen name="Add" component={AddScreen} />
       <Stack.Screen name="Detail" component={DetailScreen} />
+      <Stack.Screen name="Edit" component={EditScreen} />
     </Stack.Navigator>
   );
 }

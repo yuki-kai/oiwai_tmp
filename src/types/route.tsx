@@ -5,4 +5,7 @@ export type RootStackParamList = {
   Detail: {
     celebration: CelebrationDto;
   };
+  Edit: {
+    celebration: CelebrationDto;
+  };
 };

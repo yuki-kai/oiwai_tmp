@@ -35,7 +35,10 @@ export default function ListScreen() {
           <CelebrationCard celebration={ item } />
         )}
       />
-      <AddButton handleButtonPress={handleAddCelebration} />
+      <AddButton
+        label="記念日を追加"
+        handleButtonPress={handleAddCelebration}
+      />
     </View>
   );
 }

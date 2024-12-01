@@ -14,7 +14,7 @@ export default function DetailScreen() {
     navigation.setOptions({
       headerRight: () => (
         <Button
-          title="編集"
+          title="更新"
           onPress={() => navigation.navigate("Edit", { celebration: route.params.celebration })}
         />
       ),

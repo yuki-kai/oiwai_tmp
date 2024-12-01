@@ -6,13 +6,16 @@ import {
 } from "react-native";
 
 type Props = {
+  label: string;
   handleButtonPress: (event: GestureResponderEvent) => void
 };
 
-export default function AddButton({ handleButtonPress }: Props) {
+export default function AddButton( props: Props) {
+  const { label, handleButtonPress } = props;
+
   return (
     <TouchableOpacity style={ styles.addButton } onPress={ handleButtonPress }>
-      <Text style={styles.addButtonLabel}>記念日を追加</Text>
+      <Text style={ styles.addButtonLabel }>{ label }</Text>
     </TouchableOpacity>
   );
 }

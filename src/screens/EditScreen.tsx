@@ -55,7 +55,10 @@ export default function EditScreen() {
         </View>
       </TouchableWithoutFeedback>
 
-      <AddButton handleButtonPress={handleEditCelebration} />
+      <AddButton
+        label="更新する"
+        handleButtonPress={handleEditCelebration}
+      />
     </KeyboardAvoidingView>
   );
 }

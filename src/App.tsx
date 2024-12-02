@@ -1,3 +1,4 @@
+import { SafeAreaView, SafeAreaProvider } from 'react-native-safe-area-context';
 import { NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { registerRootComponent } from "expo";
@@ -12,13 +13,20 @@ import { AuthProvider } from "./utils/Auth";
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
 
+// TODO: Android の場合は StatusBar.currentHeight で高さを調整する
+
 export default function App() {
+
   return (
-    <AuthProvider>
-      <NavigationContainer>
-        <TabNavigator />
-      </NavigationContainer>
-    </AuthProvider>
+    <SafeAreaProvider>
+      <SafeAreaView style={{ flex: 1 }} >
+        <AuthProvider>
+          <NavigationContainer>
+            <TabNavigator />
+          </NavigationContainer>
+        </AuthProvider>
+      </SafeAreaView>
+    </SafeAreaProvider>
   );
 }
 

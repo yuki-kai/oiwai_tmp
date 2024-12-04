@@ -36,3 +36,5 @@ const AuthProvider = (props: PropsWithChildren) => {
 };
 
 export { AuthContext, AuthProvider };
+
+// TODO: ファイル名は AuthContext.tsx の方が適切かも

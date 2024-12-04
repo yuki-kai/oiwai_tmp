@@ -48,7 +48,10 @@ export default function AddScreen() {
         </View>
       </TouchableWithoutFeedback>
 
-      <AddButton handleButtonPress={handleAddCelebration} />
+      <AddButton
+        label="追加する"
+        handleButtonPress={handleAddCelebration}
+      />
     </KeyboardAvoidingView>
   );
 }

@@ -5,7 +5,7 @@ import { StackNavigationProp } from "@react-navigation/stack";
 import { RootStackParamList } from "../types/route";
 import { CelebrationDto } from "../types/celebration";
 
-export default function CelebrationCard({ celebration }: { celebration: CelebrationDto }) {
+function CelebrationCard({ celebration }: { celebration: CelebrationDto }) {
   const navigation = useNavigation<StackNavigationProp<RootStackParamList, "Detail">>();
 
   return (
@@ -19,6 +19,15 @@ export default function CelebrationCard({ celebration }: { celebration: Celebrat
       	<Text style={styles.celebrationDate}>{ celebration.date }</Text>
 			</View>
     </TouchableOpacity>
+  );
+}
+
+function ListEmptyCard() {
+  return (
+		<View>
+			<Text style={styles.listEmptyCard}>表示するお祝いがありません。</Text>
+			<Text style={styles.listEmptyCard}>記念日を追加してみましょう！</Text>
+		</View>
   );
 }
 
@@ -42,4 +51,11 @@ const styles = StyleSheet.create({
 		lineHeight: 16,
 		color: "#848484",
 	},
+	listEmptyCard: {
+		textAlign: "center",
+		fontSize: 16,
+		lineHeight: 32,
+	},
 });
+
+export { CelebrationCard, ListEmptyCard };

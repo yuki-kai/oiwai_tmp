@@ -3,6 +3,7 @@ import {
   addDoc,
   collection,
   CollectionReference,
+  deleteDoc,
   doc,
   DocumentData,
   FirestoreDataConverter,
@@ -75,6 +76,11 @@ export class CelebrationRepository {
       dayName: celebration.dayName,
       date: celebration.date,
     });
+    // TODO: エラーハンドリング
+  }
+
+  public async deleteCelebration(docId: string): Promise<void> {
+    await deleteDoc(doc(db, this.path, docId));
     // TODO: エラーハンドリング
   }
 }

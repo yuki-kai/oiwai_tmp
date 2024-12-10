@@ -5,3 +5,8 @@ export type CelebrationDto = {
 	createdAt?: Date;
 	updatedAt?: Date;
 };
+
+export type InputCelebration = {
+	dayName: string;
+	date: Date;
+};

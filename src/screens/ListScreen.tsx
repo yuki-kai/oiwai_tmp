@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
 import { View, StyleSheet, FlatList } from "react-native";
-import { useNavigation } from "@react-navigation/native";
+import { useIsFocused, useNavigation } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { RootStackParamList } from "../types/route";
 import { AuthContext } from "../utils/Auth";
@@ -14,15 +14,16 @@ export default function ListScreen() {
   const navigation =
     useNavigation<StackNavigationProp<RootStackParamList, "Add">>();
   const [celebrations, setCelebrations] = useState<CelebrationDto[]>([]);
+  // goBack でリダイレクトされた際に useEffect が発火しないため、useIsFocused を利用
+  const isFocused = useIsFocused();
 
   useEffect(() => {
-    (async () => {
-      if (!currentUser) return;
-      const celebrationRepository = new CelebrationRepository(currentUser.uid);
-      const celebrationList = await celebrationRepository.getCelebrationList();
+    if (!currentUser) return;
+    const celebrationRepository = new CelebrationRepository(currentUser.uid);
+    celebrationRepository.getCelebrationList().then((celebrationList) => {
       setCelebrations(celebrationList);
-    })();
-  }, [currentUser?.uid]);
+    });
+  }, [currentUser?.uid, isFocused]);
 
   const handleAddCelebration = (): void => {
     navigation.navigate("Add");

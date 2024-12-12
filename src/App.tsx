@@ -13,6 +13,7 @@ import { ThemeProvider } from "./utils/ThemeContext";
 import { themes } from "./screens/theme";
 import { useTheme } from "./hooks/useTheme";
 import { StatusBar } from "react-native";
+import { PaperProvider } from "react-native-paper";
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -23,9 +24,11 @@ export default function App() {
   return (
     <AuthProvider>
       <ThemeProvider initialTheme={themes.default}>
-        <NavigationContainer>
-          <TabNavigator />
-        </NavigationContainer>
+        <PaperProvider>
+          <NavigationContainer>
+            <TabNavigator />
+          </NavigationContainer>
+        </PaperProvider>
       </ThemeProvider>
     </AuthProvider>
   );

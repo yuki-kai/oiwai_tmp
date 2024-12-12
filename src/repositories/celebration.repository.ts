@@ -7,6 +7,7 @@ import {
   doc,
   DocumentData,
   FirestoreDataConverter,
+  getDoc,
   getDocs,
   orderBy,
   query,
@@ -60,6 +61,19 @@ export class CelebrationRepository {
         date: celebration.date,
       };
     });
+  }
+
+  public async getCelebration(docId: string): Promise<CelebrationDto> {
+    const docSnap = await getDoc(doc(db, this.path, docId));
+    const celebration = docSnap.data();
+    if (!celebration) {
+      throw new Error("Document not found");
+    }
+    return {
+      docId: docSnap.id,
+      dayName: celebration.dayName,
+      date: celebration.date,
+    };
   }
 
   public async createCelebration(celebration: CelebrationDto): Promise<void> {

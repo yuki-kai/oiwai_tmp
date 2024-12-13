@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   View,
   StyleSheet,
@@ -7,6 +7,8 @@ import {
   KeyboardAvoidingView,
   Text,
   TextInput,
+  Pressable,
+  TouchableOpacity,
 } from "react-native";
 import AddButton from "../components/AddButton";
 import useEditCelebration from "../hooks/useEditCelebration";
@@ -23,13 +25,19 @@ import { InputCelebration } from "../types/celebration";
 export default function EditScreen() {
   const { editCelebration } = useEditCelebration();
   const route = useRoute<RouteProp<RootStackParamList, "Detail">>();
-  const { control, handleSubmit, formState } = useForm({
+  const [showPicker, setShowPicker] = useState(false);
+  const [currentDate, setCurrentDate] = useState<Date>(
+    new Date(dateFromString(route.params.celebration.date)),
+  );
+  const { control, handleSubmit, reset, formState } = useForm({
     mode: "onChange",
     defaultValues: {
       dayName: route.params.celebration.dayName,
-      date: new Date(dateFromString(route.params.celebration.date)),
+      date: currentDate,
     },
   });
+
+  const toggleDatetimePicker = () => {setShowPicker(!showPicker);};
 
   const handleEditCelebration = (data: InputCelebration) => {
     const dateString = convertDateString(data.date);
@@ -56,6 +64,8 @@ export default function EditScreen() {
                   value={value}
                   placeholder="お祝いしたい日を入力してください"
                   onChangeText={onChange}
+                  keyboardType="default"
+                  returnKeyType="done"
                 />
               )}
               rules={{
@@ -74,15 +84,54 @@ export default function EditScreen() {
               control={control}
               name="date"
               render={({ field: { onChange, value } }) => (
-                <DateTimePicker
-                  style={styles.input}
-                  value={value}
-                  display="spinner"
-                  locale="ja-JP"
-                  onChange={(event, value) => {
-                    onChange(value);
-                  }}
-                />
+                <View>
+                  {!showPicker && (
+                    <Pressable onPress={toggleDatetimePicker}>
+                      <TextInput
+                        style={styles.input}
+                        value={convertDateString(value)}
+                        placeholder="年月日"
+                        editable={false}
+                        onPressIn={() => {
+                          toggleDatetimePicker();
+                          setCurrentDate(value);
+                        }}
+                      />
+                    </Pressable>
+                  )}
+                  {showPicker && (
+                    <View>
+                      <DateTimePicker
+                        style={styles.datetimeInput}
+                        mode="date"
+                        value={value}
+                        display="spinner"
+                        locale="ja-JP"
+                        onChange={(event, value) => onChange(value)}
+                      />
+                      <View style={{
+                        flexDirection: "row",
+                        justifyContent: "space-around",
+                      }}>
+                        <TouchableOpacity
+                          onPress={() => {
+                            reset({ date: currentDate });
+                            toggleDatetimePicker();
+                          }}
+                          style={styles.smallButton}
+                        >
+                          <Text>閉じる</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity
+                          onPress={toggleDatetimePicker}
+                          style={{...styles.smallButton, backgroundColor: "#c9a333"}}
+                        >
+                          <Text style={{ color: "white", fontWeight: "600" }}>決定</Text>
+                        </TouchableOpacity>
+                      </View>
+                    </View>
+                  )}
+                </View>
               )}
               rules={{ required: "入力が必要です。" }}
             />
@@ -121,6 +170,18 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     paddingHorizontal: 8,
     borderRadius: 4,
+  },
+  datetimeInput: {
+    height: 140,
+    marginTop: -10,
+  },
+  smallButton: {
+    backgroundColor: "#f0f0f0",
+    width: 100,
+    height: 40,
+    borderRadius: 32,
+    justifyContent: "center",
+    alignItems: "center",
   },
   errorMessage: {
     color: "red",

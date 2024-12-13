@@ -17,7 +17,7 @@ export default function DetailScreen() {
   const route = useRoute<RouteProp<RootStackParamList, "Detail">>();
   const { docId, dayName, date } = route.params.celebration;
   const [celebration, setCelebration] = useState<CelebrationDto>(
-    Celebration.create({ docId, dayName, date })
+    Celebration.create({ docId, dayName, date }),
   );
   const navigation =
     useNavigation<StackNavigationProp<RootStackParamList, "Edit">>();

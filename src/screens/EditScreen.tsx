@@ -29,13 +29,16 @@ export default function EditScreen() {
   const [currentDate, setCurrentDate] = useState<Date>(
     new Date(dateFromString(route.params.celebration.date)),
   );
-  const { control, handleSubmit, reset, formState } = useForm({
+  const { control, handleSubmit, reset, watch, formState } = useForm<InputCelebration>({
     mode: "onChange",
     defaultValues: {
       dayName: route.params.celebration.dayName,
       date: currentDate,
+      memo: route.params.celebration.memo,
     },
   });
+  const dayNameValue = watch("dayName", "");
+  const memoValue = watch("memo", "");
 
   const toggleDatetimePicker = () => {setShowPicker(!showPicker);};
 
@@ -45,6 +48,7 @@ export default function EditScreen() {
       docId: route.params.celebration.docId,
       dayName: data.dayName,
       date: dateString,
+      memo: data.memo,
     });
     editCelebration(celebration);
   };
@@ -54,15 +58,21 @@ export default function EditScreen() {
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <View>
           <View style={styles.formWrapper}>
-            <Text style={styles.label}>お祝いする日</Text>
+            <View style={styles.formLabelWrapper}>
+              <Text style={styles.label}>お祝いする日</Text>
+              <Text style={styles.label}>{dayNameValue.length}/20</Text>
+            </View>
             <Controller
               control={control}
               name="dayName"
               render={({ field: { onChange, value } }) => (
                 <TextInput
-                  style={styles.input}
+                  style={[
+                    styles.input,
+                    formState.errors.dayName && styles.inputError,
+                  ]}
                   value={value}
-                  placeholder="お祝いしたい日を入力してください"
+                  placeholder="お祝いしたい日"
                   onChangeText={onChange}
                   keyboardType="default"
                   returnKeyType="done"
@@ -73,9 +83,11 @@ export default function EditScreen() {
                 maxLength: { value: 20, message: "20文字以内で入力してください" },
               }}
             />
-            {formState.errors.dayName && typeof formState.errors.dayName.message === "string" && (
-              <Text style={styles.errorMessage}>{formState.errors.dayName.message}</Text>
-            )}
+            <View style={styles.errorMessageWrapper}>
+              {formState.errors.dayName && typeof formState.errors.dayName.message === "string" && (
+                <Text style={styles.errorMessage}>{formState.errors.dayName.message}</Text>
+              )}
+            </View>
           </View>
 
           <View style={styles.formWrapper}>
@@ -135,9 +147,45 @@ export default function EditScreen() {
               )}
               rules={{ required: "入力が必要です。" }}
             />
-            {formState.errors.date && typeof formState.errors.date.message === "string" && (
-              <Text style={styles.errorMessage}>{formState.errors.date.message}</Text>
-            )}
+            <View style={styles.errorMessageWrapper}>
+              {formState.errors.date && typeof formState.errors.date.message === "string" && (
+                <Text style={styles.errorMessage}>{formState.errors.date.message}</Text>
+              )}
+            </View>
+          </View>
+
+          <View style={styles.formWrapper}>
+            <View style={styles.formLabelWrapper}>
+              <Text style={styles.label}>メモ</Text>
+              <Text style={styles.label}>{(memoValue && memoValue.length) || 0}/500</Text>
+            </View>
+            <Controller
+              control={control}
+              name="memo"
+              render={({ field: { onChange, value } }) => (
+                <TextInput
+                  style={[
+                    styles.multilineInput,
+                    formState.errors.memo && styles.inputError,
+                  ]}
+                  value={value}
+                  multiline={true}
+                  numberOfLines={4}
+                  placeholder="欲しがってたもの、贈るもの、行く場所など"
+                  onChangeText={onChange}
+                  keyboardType="default"
+                  returnKeyType="done"
+                />
+              )}
+              rules={{
+                maxLength: { value: 500, message: "500文字以内で入力してください" },
+              }}
+            />
+            <View style={styles.errorMessageWrapper}>
+              {formState.errors.memo && typeof formState.errors.memo.message === "string" && (
+                <Text style={styles.errorMessage}>{formState.errors.memo.message}</Text>
+              )}
+            </View>
           </View>
         </View>
       </TouchableWithoutFeedback>
@@ -157,12 +205,16 @@ const styles = StyleSheet.create({
   },
   formWrapper: {
     backgroundColor: "#fff",
-    paddingVertical: 8,
+    paddingTop: 8,
     paddingHorizontal: 20,
   },
   label: {
     fontSize: 12,
     marginBottom: 2,
+  },
+  formLabelWrapper: {
+    flexDirection: "row",
+    justifyContent: "space-between",
   },
   input: {
     borderColor: "#969696",
@@ -170,6 +222,15 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     paddingHorizontal: 8,
     borderRadius: 4,
+  },
+  multilineInput: {
+    borderColor: "#969696",
+    borderWidth: 1,
+    paddingVertical: 12,
+    paddingHorizontal: 8,
+    borderRadius: 4,
+    textAlignVertical: "top",
+    height: 126,
   },
   datetimeInput: {
     height: 140,
@@ -182,6 +243,12 @@ const styles = StyleSheet.create({
     borderRadius: 32,
     justifyContent: "center",
     alignItems: "center",
+  },
+  inputError: {
+    borderColor: "red",
+  },
+  errorMessageWrapper: {
+    height: 16,
   },
   errorMessage: {
     color: "red",

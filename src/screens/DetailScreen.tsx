@@ -15,9 +15,9 @@ export default function DetailScreen() {
   // TODO: read数増えるなら props で渡す
   const { currentUser } = useContext(AuthContext);
   const route = useRoute<RouteProp<RootStackParamList, "Detail">>();
-  const { docId, dayName, date } = route.params.celebration;
+  const { docId, dayName, date, memo } = route.params.celebration;
   const [celebration, setCelebration] = useState<CelebrationDto>(
-    Celebration.create({ docId, dayName, date }),
+    Celebration.create({ ...route.params.celebration }),
   );
   const navigation =
     useNavigation<StackNavigationProp<RootStackParamList, "Edit">>();
@@ -44,10 +44,11 @@ export default function DetailScreen() {
     celebrationRepository.getCelebration(docId).then((celebration) => {
       setCelebration(celebration);
     });
-  }, [dayName, date]);
+  }, [dayName, date, memo]);
 
   useLayoutEffect(() => {
     navigation.setOptions({
+      // TODO: 表示位置がおかしくなった
       headerRight: () => (
         <Menu
           visible={visible}
@@ -63,9 +64,7 @@ export default function DetailScreen() {
         >
           <Menu.Item
             onPress={() => {
-              navigation.navigate("Edit", {
-                celebration: route.params.celebration,
-              });
+              navigation.navigate("Edit", {celebration});
               closeMenu();
             }}
             title="更新"
@@ -86,6 +85,7 @@ export default function DetailScreen() {
     <View style={styles.container}>
       <TextConfirm label="お祝いする日" value={ celebration.dayName } />
       <TextConfirm label="年月日" value={ celebration.date } />
+      <TextConfirm label="メモ" value={ celebration.memo || "" } />
     </View>
   );
 }

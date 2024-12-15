@@ -11,7 +11,6 @@ function CelebrationCard({ celebration }: { celebration: CelebrationDto }) {
   return (
     <TouchableOpacity
 			style={styles.celebrationCard}
-			// TODO: Date型は Non-serializable values were found の WARN が出るのでunixtimeで扱う？
 			onPress={() => navigation.navigate("Detail", { celebration })}
 		>
 			<View>

@@ -24,19 +24,37 @@ export default function AddScreen() {
   const { addCelebration } = useAddaddCelebration();
   const [showPicker, setShowPicker] = useState(false);
   const [currentDate, setCurrentDate] = useState<Date>(new Date());
-  const { control, handleSubmit, reset, formState } = useForm({
+  const { control, handleSubmit, reset, watch, formState } = useForm<InputCelebration>({
     mode: "onChange",
     defaultValues: {
       dayName: "",
       date: currentDate,
+      memo: "",
     },
   });
+  const dayNameValue = watch("dayName", "");
+  const memoValue = watch("memo", "");
 
-  const toggleDatetimePicker = () => {setShowPicker(!showPicker);};
+  Keyboard.addListener("keyboardWillShow", () => {
+    if (showPicker) {
+      setShowPicker(!showPicker);
+    }
+  });
+
+  const toggleDatetimePicker = () => {
+    if (!showPicker) {
+      Keyboard.dismiss();
+    }
+    setShowPicker(!showPicker);
+  };
 
   const handleAddCelebration = (data: InputCelebration) => {
     const dateString = convertDateString(data.date);
-    const celebration = Celebration.create({ dayName: data.dayName, date: dateString });
+    const celebration = Celebration.create({
+      dayName: data.dayName,
+      date: dateString,
+      memo: data.memo,
+    });
     addCelebration(celebration);
   };
 
@@ -45,15 +63,21 @@ export default function AddScreen() {
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <View>
           <View style={styles.formWrapper}>
-            <Text style={styles.label}>お祝いする日</Text>
+            <View style={styles.formLabelWrapper}>
+              <Text style={styles.label}>お祝いする日</Text>
+              <Text style={styles.label}>{dayNameValue.length}/20</Text>
+            </View>
             <Controller
               control={control}
               name="dayName"
               render={({ field: { onChange, value } }) => (
                 <TextInput
-                  style={styles.input}
+                  style={[
+                    styles.input,
+                    formState.errors.dayName && styles.inputError,
+                  ]}
                   value={value}
-                  placeholder="お祝いしたい日を入力してください"
+                  placeholder="お祝いしたい日"
                   onChangeText={onChange}
                   keyboardType="default"
                   returnKeyType="done"
@@ -64,12 +88,13 @@ export default function AddScreen() {
                 maxLength: { value: 20, message: "20文字以内で入力してください" },
               }}
             />
-            {formState.errors.dayName && typeof formState.errors.dayName.message === "string" && (
-              <Text style={styles.errorMessage}>{formState.errors.dayName.message}</Text>
-            )}
+            <View style={styles.errorMessageWrapper}>
+              {formState.errors.dayName && typeof formState.errors.dayName.message === "string" && (
+                <Text style={styles.errorMessage}>{formState.errors.dayName.message}</Text>
+              )}
+            </View>
           </View>
 
-          {/* これに作り替える https://www.youtube.com/watch?v=UEfFjfW7Zes */}
           <View style={styles.formWrapper}>
             <Text style={styles.label}>年月日</Text>
             <Controller
@@ -127,35 +152,46 @@ export default function AddScreen() {
               )}
               rules={{ required: "入力が必要です。" }}
             />
-            {formState.errors.date && typeof formState.errors.date.message === "string" && (
-              <Text style={styles.errorMessage}>{formState.errors.date.message}</Text>
-            )}
+            <View style={styles.errorMessageWrapper}>
+              {formState.errors.date && typeof formState.errors.date.message === "string" && (
+                <Text style={styles.errorMessage}>{formState.errors.date.message}</Text>
+              )}
+            </View>
           </View>
 
-
-
-          {/* <View style={styles.formWrapper}>
-            <Text style={styles.label}>年月日</Text>
+          <View style={styles.formWrapper}>
+            <View style={styles.formLabelWrapper}>
+              <Text style={styles.label}>メモ</Text>
+              <Text style={styles.label}>{(memoValue && memoValue.length) || 0}/500</Text>
+            </View>
             <Controller
               control={control}
-              name="date"
+              name="memo"
               render={({ field: { onChange, value } }) => (
-                <DateTimePicker
-                  style={styles.input}
+                <TextInput
+                  style={[
+                    styles.multilineInput,
+                    formState.errors.memo && styles.inputError,
+                  ]}
                   value={value}
-                  display="spinner"
-                  locale="ja-JP"
-                  onChange={(event, value) => {
-                    onChange(value);
-                  }}
+                  multiline={true}
+                  numberOfLines={4}
+                  placeholder="欲しがってたもの、贈るもの、行く場所など"
+                  onChangeText={onChange}
+                  keyboardType="default"
+                  returnKeyType="done"
                 />
               )}
-              rules={{ required: "入力が必要です。" }}
+              rules={{
+                maxLength: { value: 500, message: "500文字以内で入力してください" },
+              }}
             />
-            {formState.errors.date && typeof formState.errors.date.message === "string" && (
-              <Text style={styles.errorMessage}>{formState.errors.date.message}</Text>
-            )}
-          </View> */}
+            <View style={styles.errorMessageWrapper}>
+              {formState.errors.memo && typeof formState.errors.memo.message === "string" && (
+                <Text style={styles.errorMessage}>{formState.errors.memo.message}</Text>
+              )}
+            </View>
+          </View>
         </View>
       </TouchableWithoutFeedback>
 
@@ -174,8 +210,12 @@ const styles = StyleSheet.create({
   },
   formWrapper: {
     backgroundColor: "#fff",
-    paddingVertical: 8,
+    paddingTop: 8,
     paddingHorizontal: 20,
+  },
+  formLabelWrapper: {
+    flexDirection: "row",
+    justifyContent: "space-between",
   },
   label: {
     fontSize: 12,
@@ -188,6 +228,15 @@ const styles = StyleSheet.create({
     paddingHorizontal: 8,
     borderRadius: 4,
   },
+  multilineInput: {
+    borderColor: "#969696",
+    borderWidth: 1,
+    paddingVertical: 12,
+    paddingHorizontal: 8,
+    borderRadius: 4,
+    textAlignVertical: "top",
+    height: 126,
+  },
   datetimeInput: {
     height: 140,
     marginTop: -10,
@@ -199,6 +248,12 @@ const styles = StyleSheet.create({
     borderRadius: 32,
     justifyContent: "center",
     alignItems: "center",
+  },
+  inputError: {
+    borderColor: "red",
+  },
+  errorMessageWrapper: {
+    height: 16,
   },
   errorMessage: {
     color: "red",

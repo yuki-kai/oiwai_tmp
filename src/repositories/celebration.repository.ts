@@ -25,6 +25,7 @@ const celebrationConverter: FirestoreDataConverter<CelebrationDto> = {
       docId: snapshot.id,
       dayName: data.dayName,
       date: data.date,
+      memo: data.memo,
       createdAt: data.createdAt,
       updatedAt: data.updatedAt,
     };
@@ -33,6 +34,7 @@ const celebrationConverter: FirestoreDataConverter<CelebrationDto> = {
     return {
       dayName: celebration.dayName,
       date: celebration.date,
+      memo: celebration.memo || "",
       createdAt: celebration.createdAt ? celebration.createdAt : serverTimestamp(),
       updatedAt: serverTimestamp(), // TODO: 更新されないがシミュレータだから？
     };
@@ -52,6 +54,7 @@ export class CelebrationRepository {
   }
 
   public async getCelebrationList(): Promise<CelebrationDto[]> {
+    // TODO: dateが文字列なのでソートがうまくいかない。Timestampで保存した方が良いかも
     const snapshot = await getDocs(query(this.collectionRef, orderBy("date")));
     return snapshot.docs.map((doc) => {
       const celebration = doc.data();
@@ -73,6 +76,7 @@ export class CelebrationRepository {
       docId: docSnap.id,
       dayName: celebration.dayName,
       date: celebration.date,
+      memo: celebration.memo,
     };
   }
 
@@ -80,6 +84,7 @@ export class CelebrationRepository {
     await addDoc(this.collectionRef, {
       dayName: celebration.dayName,
       date: celebration.date,
+      memo: celebration.memo,
     });
     // TODO: エラーハンドリング
   }
@@ -89,6 +94,7 @@ export class CelebrationRepository {
     await updateDoc(docRef, {
       dayName: celebration.dayName,
       date: celebration.date,
+      memo: celebration.memo,
     });
     // TODO: エラーハンドリング
   }

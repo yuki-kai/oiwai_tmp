@@ -10,6 +10,7 @@ import { AuthContext } from "../utils/Auth";
 import { CelebrationRepository } from "../repositories/celebration.repository";
 import { CelebrationDto } from "../types/celebration";
 import { Celebration } from "../models/Celebration";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 export default function DetailScreen() {
   // TODO: read数増えるなら props で渡す
@@ -23,7 +24,7 @@ export default function DetailScreen() {
     useNavigation<StackNavigationProp<RootStackParamList, "Edit">>();
   const { deleteCelebration } = useDeleteCelebration();
   const [visible, setVisible] = useState(false);
-
+  const insets = useSafeAreaInsets();
 
   const openMenu = () => setVisible(true);
   const closeMenu = () => setVisible(false);
@@ -48,7 +49,6 @@ export default function DetailScreen() {
 
   useLayoutEffect(() => {
     navigation.setOptions({
-      // TODO: 表示位置がおかしくなった
       headerRight: () => (
         <Menu
           visible={visible}
@@ -61,6 +61,13 @@ export default function DetailScreen() {
               onPress={openMenu}
             />
           }
+          style={{
+            position: "absolute",
+            right: 10,
+            top: insets.top + 44,
+            flexDirection: "row",
+            justifyContent: "flex-end",
+          }}
         >
           <Menu.Item
             onPress={() => {

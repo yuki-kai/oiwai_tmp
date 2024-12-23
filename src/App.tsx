@@ -1,4 +1,4 @@
-import { SafeAreaView, SafeAreaProvider } from "react-native-safe-area-context";
+import { SafeAreaProvider } from "react-native-safe-area-context";
 import { NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { registerRootComponent } from "expo";
@@ -39,26 +39,22 @@ function TabNavigator() {
 
   return (
     <SafeAreaProvider>
-      <SafeAreaView
-        style={{ flex: 1, backgroundColor: theme.Backgroud.primary }}
-      >
-        <StatusBar barStyle="light-content" />
-        <Tab.Navigator screenOptions={{ unmountOnBlur: true }}>
-          <Tab.Screen
-            name="リスト"
-            component={ListStackNavigator}
-            options={{
-              headerShown: false,
-              tabBarActiveTintColor: theme.Text.secondary,
-            }}
-          />
-          <Tab.Screen
-            name="カレンダー"
-            component={CalendarStackNavigator}
-            options={{ headerShown: false }}
-          />
-        </Tab.Navigator>
-      </SafeAreaView>
+      <StatusBar barStyle="light-content" />
+      <Tab.Navigator screenOptions={{ unmountOnBlur: true }}>
+        <Tab.Screen
+          name="リスト"
+          component={ListStackNavigator}
+          options={{
+            headerShown: false,
+            tabBarActiveTintColor: theme.Text.secondary,
+          }}
+        />
+        <Tab.Screen
+          name="カレンダー"
+          component={CalendarStackNavigator}
+          options={{ headerShown: false }}
+        />
+      </Tab.Navigator>
     </SafeAreaProvider>
   );
 }

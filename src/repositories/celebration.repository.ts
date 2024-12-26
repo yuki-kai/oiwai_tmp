@@ -13,8 +13,8 @@ import {
   query,
   QueryDocumentSnapshot,
   serverTimestamp,
+  setDoc,
   SnapshotOptions,
-  updateDoc,
 } from "firebase/firestore";
 import { db } from "../../firebaseConfig";
 
@@ -25,6 +25,7 @@ const celebrationConverter: FirestoreDataConverter<CelebrationDto> = {
       docId: snapshot.id,
       dayName: data.dayName,
       date: data.date,
+      reminds: data.reminds,
       memo: data.memo,
       createdAt: data.createdAt,
       updatedAt: data.updatedAt,
@@ -34,6 +35,7 @@ const celebrationConverter: FirestoreDataConverter<CelebrationDto> = {
     return {
       dayName: celebration.dayName,
       date: celebration.date,
+      reminds: celebration.reminds,
       memo: celebration.memo || "",
       createdAt: celebration.createdAt ? celebration.createdAt : serverTimestamp(),
       updatedAt: serverTimestamp(), // TODO: 更新されないがシミュレータだから？
@@ -62,12 +64,13 @@ export class CelebrationRepository {
         docId: doc.id,
         dayName: celebration.dayName,
         date: celebration.date,
+        reminds: celebration.reminds,
       };
     });
   }
 
   public async getCelebration(docId: string): Promise<CelebrationDto> {
-    const docSnap = await getDoc(doc(db, this.path, docId));
+    const docSnap = await getDoc(doc(db, this.path, docId).withConverter(celebrationConverter));
     const celebration = docSnap.data();
     if (!celebration) {
       throw new Error("Document not found");
@@ -76,6 +79,7 @@ export class CelebrationRepository {
       docId: docSnap.id,
       dayName: celebration.dayName,
       date: celebration.date,
+      reminds: celebration.reminds,
       memo: celebration.memo,
     };
   }
@@ -84,16 +88,18 @@ export class CelebrationRepository {
     await addDoc(this.collectionRef, {
       dayName: celebration.dayName,
       date: celebration.date,
+      reminds: celebration.reminds,
       memo: celebration.memo,
     });
     // TODO: エラーハンドリング
   }
 
   public async editCelebration(celebration: CelebrationDto): Promise<void> {
-    const docRef = doc(db, this.path, celebration.docId!);
-    await updateDoc(docRef, {
+    const docRef = doc(db, this.path, celebration.docId!).withConverter(celebrationConverter);
+    await setDoc(docRef, {
       dayName: celebration.dayName,
       date: celebration.date,
+      reminds: celebration.reminds,
       memo: celebration.memo,
     });
     // TODO: エラーハンドリング

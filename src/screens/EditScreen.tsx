@@ -17,8 +17,9 @@ import { convertDateString, dateFromString } from "../utils/dateFormat";
 import { RouteProp, useRoute } from "@react-navigation/native";
 import { RootStackParamList } from "../types/route";
 import DateTimePicker from "@react-native-community/datetimepicker";
-import { useForm, Controller } from "react-hook-form";
+import { useForm, Controller, useFieldArray } from "react-hook-form";
 import { InputCelebration } from "../types/celebration";
+import Checkbox from "expo-checkbox";
 // import TextForm from "../components/TextForm";
 // import DateForm from "../components/DateForm";
 
@@ -34,8 +35,13 @@ export default function EditScreen() {
     defaultValues: {
       dayName: route.params.celebration.dayName,
       date: currentDate,
+      reminds: route.params.celebration.reminds,
       memo: route.params.celebration.memo,
     },
+  });
+  const { fields } = useFieldArray<InputCelebration>({
+    control,
+    name: "reminds",
   });
   const dayNameValue = watch("dayName", "");
   const memoValue = watch("memo", "");
@@ -48,6 +54,7 @@ export default function EditScreen() {
       docId: route.params.celebration.docId,
       dayName: data.dayName,
       date: dateString,
+      reminds: data.reminds,
       memo: data.memo,
     });
     editCelebration(celebration);
@@ -155,6 +162,29 @@ export default function EditScreen() {
           </View>
 
           <View style={styles.formWrapper}>
+            <Text style={styles.label}>リマインド</Text>
+            <View style={styles.remindsWrapper}>
+              {fields.map((field, index) => (
+                <View key={field.id} style={styles.remindWrapper}>
+                  <Text>{field.label}</Text>
+                  <Controller
+                    control={control}
+                    name={`reminds.${index}.isChecked`}
+                    render={({ field: { onChange, value } }) => (
+                      <Checkbox
+                        value={value}
+                        onValueChange={onChange}
+                        style={styles.checkbox}
+                      />
+                    )}
+                  />
+                </View>
+              ))}
+            </View>
+            <View style={styles.errorMessageWrapper}></View>
+          </View>
+
+          <View style={styles.formWrapper}>
             <View style={styles.formLabelWrapper}>
               <Text style={styles.label}>メモ</Text>
               <Text style={styles.label}>{(memoValue && memoValue.length) || 0}/500</Text>
@@ -243,6 +273,22 @@ const styles = StyleSheet.create({
     borderRadius: 32,
     justifyContent: "center",
     alignItems: "center",
+  },
+  remindsWrapper: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+  },
+  remindWrapper: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginVertical: 2,
+  },
+  checkbox: {
+    marginLeft: 2,
+    marginRight: 10,
+    borderColor: "#969696",
+    borderWidth: 1,
+    borderRadius: 4,
   },
   inputError: {
     borderColor: "red",

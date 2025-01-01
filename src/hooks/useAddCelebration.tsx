@@ -3,6 +3,7 @@ import { useContext } from "react";
 import { AuthContext } from "../utils/Auth";
 import { CelebrationRepository } from "../repositories/celebration.repository";
 import { CelebrationDto } from "../types/celebration";
+import { scheduleRemindNotification } from "../utils/pushNotification";
 
 const useAddCelebration = () => {
   const { currentUser } = useContext(AuthContext);
@@ -13,6 +14,7 @@ const useAddCelebration = () => {
     celebrationRepository.createCelebration(celebration)
       .then((docRef) => {
         console.log("成功" + docRef);
+        scheduleRemindNotification(celebration.date, celebration.reminds);
         navigation.goBack();
       })
       .catch((error) => {
